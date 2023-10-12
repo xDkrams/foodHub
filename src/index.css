@@ -1,3 +1,33 @@
 .slider-container{
   padding-top: 2rem;
+  margin-top: 2rem;
+  height: 40vh;
+}
+/* Add this CSS to your stylesheet */
+.recipe-card {
+  perspective: 1000px;
+  cursor: pointer;
+  position: relative;
+}
+
+/* Add this class when you want to flip the card */
+.flipped {
+  animation: flip 0.7s ease-in-out;
+}
+
+@keyframes flip {
+  0% {
+    transform: rotateY(0deg);
+  }
+  100% {
+    transform: rotateY(180deg);
+  }
+}
+
+/* Additional styles for the back of the card */
+.recipe-card .back {
+  transform: rotateY(180deg);
+  position: absolute;
+  top: 0;
+  left: 0;
 }

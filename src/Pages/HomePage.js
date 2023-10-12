@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import TextField from "@mui/material/TextField";
-import { useMediaQuery, Grid, Paper } from "@mui/material";
+import { useMediaQuery, Grid, Paper, Typography } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
 import InputAdornment from "@mui/material/InputAdornment";
@@ -10,53 +10,67 @@ import { useTransition, animated } from "react-spring";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import "../index.css";
+import axios from "axios";
 
 const HomePage = () => {
   const isXs = useMediaQuery("(max-width:600px)");
   const isMd = useMediaQuery("(max-width:960px)");
 
-  // Define the width for different screen sizes
-  const paperWidth = isXs ? "100%" : isMd ? "50%" : "33.33%";
   const [searchQuery, setSearchQuery] = useState("");
   const [showButtons, setShowButtons] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [flipped, setFlipped] = useState(null);
+
+  const handleFlip = (uri) => {
+    if (flipped === uri) {
+      setFlipped(null);
+    } else {
+      setFlipped(uri);
+    }
+  };
+
+  //states for recipe
+
+  const [recipe, setRecipe] = useState([]);
 
   const handleSearchChange = (value) => {
     setSearchQuery(value);
   };
 
   const handleSearch = () => {
+    const APP_ID = "a42a6bf7";
+    const APP_KEY = "469b1b8e24bc3797a13c9d0a451c25de";
     // Implement your search functionality here
-    console.log("Searching for:", searchQuery);
+    // console.log("Searching for:", searchQuery);
+    axios
+      .get(
+        `https://api.edamam.com/search?q=${searchQuery}&app_id=${APP_ID}&app_key=${APP_KEY}`
+      )
+      .then((res) => {
+        const hits = res.data.hits;
+
+        const result = hits.map((res) => res.recipe);
+        setRecipe(result);
+      });
   };
 
   const handleNext = () => {
-    setCurrentIndex((prevIndex) => (prevIndex === 7 ? 0 : prevIndex + 1));
-    console.log("Current Item:", items[(currentIndex + 1) % items.length]);
+    setCurrentIndex((prevIndex) =>
+      prevIndex === recipe.length - 1 ? 0 : prevIndex + 1
+    );
   };
 
   const handlePrevious = () =>
     setCurrentIndex((prevIndex) =>
-      prevIndex > 0 ? prevIndex - 1 : items.length - 1
+      prevIndex > 0 ? prevIndex - 1 : recipe.length - 1
     );
 
-  const items = [
-    { id: 1, content: "Content 1", color: "red" },
-    { id: 2, content: "Content 2", color: "blue" },
-    { id: 3, content: "Content 3", color: "green" },
-    { id: 4, content: "Content 4", color: "orange" },
-    { id: 5, content: "Content 5", color: "purple" },
-    { id: 6, content: "Content 6", color: "pink" },
-    { id: 7, content: "Content 7", color: "cyan" },
-    { id: 8, content: "Content 8", color: "teal" },
-  ];
-
   const buttonTransitions = useTransition(showButtons, {
-    from: { opacity: 0 },
-    enter: { opacity: 1 },
-    leave: { opacity: 0 },
+    from: { opacity: 5 },
+    enter: { opacity: 5 },
+    leave: { opacity: 5 },
   });
-
+  console.log(recipe);
   return (
     <>
       <Grid container spacing={2}>
@@ -94,47 +108,121 @@ const HomePage = () => {
           />
         </Grid>
       </Grid>
-
-      <Carousel
-        showThumbs={false}
-        centerMode={true}
-        selectedItem={currentIndex}
-        onChange={setCurrentIndex}
-        emulateTouch={true}
-        centerSlidePercentage={isXs ? 100 : isMd ? 50 : 33.33}
-        dynamicHeight={true}
-        showStatus={false}
-        className="slider-container"
-      >
-        {items.map((item) => (
-          <div key={item.id}>
+      <Box style={{ marginBottom: "5rem", height: "45vh" }}>
+        <Carousel
+          showThumbs={false}
+          centerMode={isXs ? false : isMd ? false : true}
+          selectedItem={currentIndex}
+          onChange={setCurrentIndex}
+          emulateTouch={false}
+          centerSlidePercentage={isXs ? 100 : isMd ? 60 : 33.33}
+          dynamicHeight={false}
+          showStatus={false}
+          showIndicators={false}
+          className="slider-container"
+          renderArrowPrev={() => <div />}
+          renderArrowNext={() => <div />}
+        >
+          {recipe?.map((recipes) => (
             <Paper
+              key={recipes.uri}
               elevation={15}
               style={{
-                height: "60vh",
-                width: isXs ? "80%" : isMd ? "60%" : "100%",
-                margin: "0 auto",
-                padding: isXs ? "5rem" : isMd ? "0 12rem" : "0 15rem",
-                background: item.color,
-                width: paperWidth,
+                height: isXs ? "60vh" : isMd ? "40vh" : "35vh",
+                padding: isXs ? "5rem" : isMd ? "0 3rem" : "0 2rem",
+                textAlign: "center",
+                margin: "1rem",
               }}
+              className={`recipe-card ${
+                flipped === recipes.uri ? "flipped" : ""
+              }`}
+              onClick={() => handleFlip(recipes.uri)}
             >
-              {item.content}
-            </Paper>
-          </div>
-        ))}
-      </Carousel>
-
-      {buttonTransitions(
-        (styles, item) =>
-          item && (
-            <animated.div style={styles}>
-              <Box style={{ marginTop: "2rem", textAlign: "center" }}>
-                <Button onClick={handlePrevious}>Previous</Button>
-                <Button onClick={handleNext}>Next</Button>
+              <Box className="recipe-card-inner">
+                {flipped === recipes.uri ? (
+                  // Display content when card is flipped
+                  <Box className="flipped-content">
+                    <Grid container spacing={2}>
+                      <Grid item xs={6}>
+                        <Typography variant="subtitle1">
+                          Cuisine Type:
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={6}>
+                        <Typography variant="body1">
+                          {recipes.cuisineType && recipes.cuisineType.length > 0
+                            ? recipes.cuisineType.join(", ")
+                            : "N/A"}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={6}>
+                        <Typography variant="subtitle1">
+                          Diet Labels:
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={6}>
+                        <Typography variant="body1">
+                          {recipes.dietLabels && recipes.dietLabels.length > 0
+                            ? recipes.dietLabels.join(", ")
+                            : "N/A"}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={6}>
+                        <Typography variant="subtitle1">Dish Type:</Typography>
+                      </Grid>
+                      <Grid item xs={6}>
+                        <Typography variant="body1">
+                          {recipes.dishType && recipes.dishType.length > 0
+                            ? recipes.dishType.join(", ")
+                            : "N/A"}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={6}>
+                        <Typography variant="subtitle1">Meal Type:</Typography>
+                      </Grid>
+                      <Grid item xs={6}>
+                        <Typography variant="body1">
+                          {recipes.mealType && recipes.mealType.length > 0
+                            ? recipes.mealType.join(", ")
+                            : "N/A"}
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                  </Box>
+                ) : (
+                  // Display initial content when card is not flipped
+                  <Box
+                    className="initial-content"
+                    style={{ paddingTop: "2rem" }}
+                  >
+                    <img
+                      src={recipes.image}
+                      alt={recipes.label}
+                      style={{
+                        maxHeight: "50%",
+                        objectFit: "cover",
+                        height: "13rem",
+                        width: "15rem",
+                      }}
+                    />
+                    <h3>{recipes.label}</h3>
+                  </Box>
+                )}
               </Box>
-            </animated.div>
-          )
+            </Paper>
+          ))}
+        </Carousel>
+      </Box>
+
+      {buttonTransitions((styles, item) =>
+        recipe && recipe.length > 0 ? (
+          <animated.div style={styles}>
+            <Box style={{ marginTop: "2rem", textAlign: "center" }}>
+              <Button onClick={handlePrevious}>Previous</Button>
+              <Button onClick={handleNext}>Next</Button>
+            </Box>
+          </animated.div>
+        ) : null
       )}
     </>
   );
