@@ -31,14 +31,14 @@ const HomePage = () => {
   };
 
   const handleNext = () => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex < items.length - 1 ? prevIndex + 1 : prevIndex
-    );
+    setCurrentIndex((prevIndex) => (prevIndex === 7 ? 0 : prevIndex + 1));
+    console.log("Current Item:", items[(currentIndex + 1) % items.length]);
   };
 
-  const handlePrevious = () => {
-    setCurrentIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : prevIndex));
-  };
+  const handlePrevious = () =>
+    setCurrentIndex((prevIndex) =>
+      prevIndex > 0 ? prevIndex - 1 : items.length - 1
+    );
 
   const items = [
     { id: 1, content: "Content 1", color: "red" },
@@ -50,20 +50,6 @@ const HomePage = () => {
     { id: 7, content: "Content 7", color: "cyan" },
     { id: 8, content: "Content 8", color: "teal" },
   ];
-
-  const visibleItems = items.slice(currentIndex, currentIndex + items.length);
-  // const visibleItems = items.slice(
-  //   currentIndex,
-  //   currentIndex + (isXs ? 1 : isMd ? 2 : 3)
-  // );
-
-  // if (isXs) {
-  //   // In extra-small (xs) screens, show only 1 item at a time
-  //   // If the current item index is the last one, prevent it from going out of bounds
-  //   if (currentIndex === items.length - 1) {
-  //     visibleItems.pop(); // Remove the extra item if we're at the last item
-  //   }
-  // }
 
   const buttonTransitions = useTransition(showButtons, {
     from: { opacity: 0 },
@@ -120,7 +106,7 @@ const HomePage = () => {
         showStatus={false}
         className="slider-container"
       >
-        {visibleItems.map((item) => (
+        {items.map((item) => (
           <div key={item.id}>
             <Paper
               elevation={15}
