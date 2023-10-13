@@ -117,7 +117,7 @@ const HomePage = () => {
           emulateTouch={false}
           centerSlidePercentage={isXs ? 100 : isMd ? 60 : 33.33}
           dynamicHeight={false}
-          showStatus={false}
+          showStatus={true}
           showIndicators={false}
           className="slider-container"
           renderArrowPrev={() => <div />}
@@ -141,7 +141,10 @@ const HomePage = () => {
               <Box className="recipe-card-inner">
                 {flipped === recipes.uri ? (
                   // Display content when card is flipped
-                  <Box className="flipped-content">
+                  <Box
+                    className="flipped-content"
+                    style={{ paddingTop: "4rem" }}
+                  >
                     <Grid container spacing={2}>
                       <Grid item xs={6}>
                         <Typography variant="subtitle1">
@@ -185,6 +188,11 @@ const HomePage = () => {
                           {recipes.mealType && recipes.mealType.length > 0
                             ? recipes.mealType.join(", ")
                             : "N/A"}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={12} style={{ paddingTop: "2rem" }}>
+                        <Typography variant="body1">
+                          more details ...{" "}
                         </Typography>
                       </Grid>
                     </Grid>

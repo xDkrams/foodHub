@@ -23,11 +23,3 @@
     transform: rotateY(180deg);
   }
 }
-
-/* Additional styles for the back of the card */
-.recipe-card .back {
-  transform: rotateY(180deg);
-  position: absolute;
-  top: 0;
-  left: 0;
-}
