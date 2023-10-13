@@ -10,6 +10,7 @@ import { useTransition, animated } from "react-spring";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import "../index.css";
+import Introductory from "./Introductory";
 import axios from "axios";
 
 const HomePage = () => {
@@ -108,7 +109,12 @@ const HomePage = () => {
           />
         </Grid>
       </Grid>
-      <Box style={{ marginBottom: "5rem", height: "45vh" }}>
+      <Box
+        style={{
+          marginBottom: "5rem",
+          height: "45vh",
+        }}
+      >
         <Carousel
           showThumbs={false}
           centerMode={isXs ? false : isMd ? false : true}
@@ -123,6 +129,15 @@ const HomePage = () => {
           renderArrowPrev={() => <div />}
           renderArrowNext={() => <div />}
         >
+          <Box
+            style={{
+              border: "1px solid green",
+              height: "45vh",
+              margin: "0 auto",
+            }}
+          >
+            <Introductory />
+          </Box>
           {recipe?.map((recipes) => (
             <Paper
               key={recipes.uri}
@@ -154,7 +169,7 @@ const HomePage = () => {
                       <Grid item xs={6}>
                         <Typography variant="body1">
                           {recipes.cuisineType && recipes.cuisineType.length > 0
-                            ? recipes.cuisineType.join(", ")
+                            ? recipes.cuisineType.join(", ").toUpperCase()
                             : "N/A"}
                         </Typography>
                       </Grid>
@@ -166,7 +181,7 @@ const HomePage = () => {
                       <Grid item xs={6}>
                         <Typography variant="body1">
                           {recipes.dietLabels && recipes.dietLabels.length > 0
-                            ? recipes.dietLabels.join(", ")
+                            ? recipes.dietLabels.join(", ").toUpperCase()
                             : "N/A"}
                         </Typography>
                       </Grid>
@@ -176,7 +191,7 @@ const HomePage = () => {
                       <Grid item xs={6}>
                         <Typography variant="body1">
                           {recipes.dishType && recipes.dishType.length > 0
-                            ? recipes.dishType.join(", ")
+                            ? recipes.dishType.join(", ").toUpperCase()
                             : "N/A"}
                         </Typography>
                       </Grid>
@@ -186,14 +201,20 @@ const HomePage = () => {
                       <Grid item xs={6}>
                         <Typography variant="body1">
                           {recipes.mealType && recipes.mealType.length > 0
-                            ? recipes.mealType.join(", ")
+                            ? recipes.mealType.join(", ").toUpperCase()
                             : "N/A"}
                         </Typography>
                       </Grid>
                       <Grid item xs={12} style={{ paddingTop: "2rem" }}>
-                        <Typography variant="body1">
-                          more details ...{" "}
-                        </Typography>
+                        <a
+                          href={recipes.shareAs}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <Typography variant="body1">
+                            {recipes.source}
+                          </Typography>
+                        </a>
                       </Grid>
                     </Grid>
                   </Box>
