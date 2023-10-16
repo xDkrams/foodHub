@@ -8,11 +8,12 @@
   perspective: 1000px;
   cursor: pointer;
   position: relative;
+
 }
 
 /* Add this class when you want to flip the card */
 .flipped {
-  animation: flip 0.7s ease-in-out;
+  animation: flip .5s ease-in-out;
 }
 
 @keyframes flip {
