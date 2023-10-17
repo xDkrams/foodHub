@@ -13,7 +13,7 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 import "../index.css";
 import Introductory from "./Introductory";
 import axios from "axios";
-import { Link } from "react-router-dom";
+
 const HomePage = () => {
   const isXs = useMediaQuery("(max-width:600px)");
   const isMd = useMediaQuery("(max-width:960px)");
@@ -28,7 +28,6 @@ const HomePage = () => {
   const handleFlip = (uri) => {
     const newIndex = recipe.findIndex((recipes) => recipes.uri === uri);
     setCurrentIndex(newIndex);
-    // setFlipped(uri);
     if (flipped === uri) {
       setFlipped(null);
     } else {
@@ -111,7 +110,7 @@ const HomePage = () => {
               endAdornment: (
                 <InputAdornment position="end">
                   {!searchClick ? (
-                    <IconButton onClick={handleSearch}>
+                    <IconButton onClick={handleSearch} disabled={!searchQuery}>
                       <SearchIcon />
                     </IconButton>
                   ) : (
@@ -140,15 +139,16 @@ const HomePage = () => {
         </Grid>
       </Grid>
       {displayMsg && (
-        <Box
-          style={{
-            border: "1px solid green",
-            height: "45vh",
-            margin: "5rem 20rem",
-          }}
-        >
-          <Introductory />
-        </Box>
+        <Grid item xs={12} md={12} lg={12}>
+          <Box
+            style={{
+              height: "45vh",
+              margin: isXs ? "2rem" : isMd ? "2rem 3rem" : "2rem 5rem",
+            }}
+          >
+            <Introductory />
+          </Box>
+        </Grid>
       )}
       {!displayMsg && (
         <Box
@@ -174,9 +174,9 @@ const HomePage = () => {
             {recipe?.map((recipes, index) => (
               <Paper
                 key={recipes.uri}
-                elevation={15}
+                elevation={5}
                 style={{
-                  height: isXs ? "60vh" : isMd ? "40vh" : "40vh",
+                  height: isXs ? "60vh" : isMd ? "45vh" : "45vh",
                   padding: isXs ? "5rem" : isMd ? "0 3rem" : "0 2rem",
                   textAlign: "center",
                   margin: "1rem",
@@ -191,11 +191,17 @@ const HomePage = () => {
                 <Box className="recipe-card-inner">
                   {flipped === recipes.uri ? (
                     // Display content when card is flipped
-                    <Box
-                      className="flipped-content"
-                      style={{ paddingTop: "4rem" }}
-                    >
+                    <Box className="flipped-content">
                       <Grid container spacing={2}>
+                        <Grid item xs={12}>
+                          <h2>Recipe Attributes</h2>
+                        </Grid>
+                      </Grid>
+                      <Grid
+                        container
+                        spacing={2}
+                        style={{ paddingTop: "1rem" }}
+                      >
                         <Grid item xs={6}>
                           <Typography variant="subtitle1">
                             Cuisine Type:
@@ -250,9 +256,13 @@ const HomePage = () => {
                             href={recipes.shareAs}
                             target="_blank"
                             rel="noopener noreferrer"
+                            style={{
+                              textDecoration: "none",
+                              color: "blue",
+                            }}
                           >
                             <Typography variant="body1">
-                              {recipes.source}
+                              <h4>click for more details and recipe</h4>
                             </Typography>
                           </a>
                         </Grid>
@@ -274,7 +284,7 @@ const HomePage = () => {
                           width: "15rem",
                         }}
                       />
-                      <h3>{recipes.label}</h3>
+                      <h3 style={{ paddingTop: "2rem" }}>{recipes.label}</h3>
                     </Box>
                   )}
                 </Box>
@@ -294,7 +304,13 @@ const HomePage = () => {
           </animated.div>
         ) : null
       )}
-      <footer> this is footer </footer>
+      <Box className="footer">
+        <footer>
+          <Typography style={{ fontSize: ".8rem" }}>
+            Data provided by Edamam
+          </Typography>
+        </footer>
+      </Box>
     </>
   );
 };

@@ -14,6 +14,7 @@
 /* Add this class when you want to flip the card */
 .flipped {
   animation: flip .5s ease-in-out;
+ 
 }
 
 @keyframes flip {
@@ -24,3 +25,16 @@
     transform: rotateY(180deg);
   }
 }
+
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #333;
+  color: #fff;
+  padding: 10px;
+  text-align: left;
+  /* animation: slide 10s linear infinite; */
+}
+
