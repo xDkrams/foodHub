@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import TextField from "@mui/material/TextField";
 import { useMediaQuery, Grid, Paper, Typography } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
@@ -7,6 +7,7 @@ import BackspaceOutlinedIcon from "@mui/icons-material/BackspaceOutlined";
 import InputAdornment from "@mui/material/InputAdornment";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import CircularProgress from "@mui/material/CircularProgress";
 import { useTransition, animated } from "react-spring";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
@@ -24,6 +25,9 @@ const HomePage = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [flipped, setFlipped] = useState(null);
   const [searchClick, setSearchClick] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const [recipe, setRecipe] = useState([]);
 
   const handleFlip = (uri) => {
     const newIndex = recipe.findIndex((recipes) => recipes.uri === uri);
@@ -35,12 +39,9 @@ const HomePage = () => {
     }
   };
 
-  //states for recipe
-
-  const [recipe, setRecipe] = useState([]);
-
   const handleSearchChange = (value) => {
     setSearchQuery(value);
+    value.length < 1 ? setSearchClick(true) : setSearchClick(false);
   };
 
   const handleSearch = () => {
@@ -58,8 +59,20 @@ const HomePage = () => {
         setRecipe(result);
         setCurrentIndex(1);
         setDisplayMsg(false);
+        setLoading(true);
       });
   };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+
+    // Cleanup: clear the timer when the component unmounts or when `loading` changes
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [loading]);
 
   const hanldeClear = () => {
     setSearchQuery("");
@@ -106,6 +119,11 @@ const HomePage = () => {
             variant="outlined"
             value={searchQuery || ""}
             onChange={(e) => handleSearchChange(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && searchQuery) {
+                handleSearch();
+              }
+            }}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
@@ -150,7 +168,18 @@ const HomePage = () => {
           </Box>
         </Grid>
       )}
-      {!displayMsg && (
+      {loading && (
+        <Grid item xs={12} md={12} lg={12} align="center">
+          <Box
+            style={{
+              height: "45vh",
+            }}
+          >
+            <CircularProgress />
+          </Box>
+        </Grid>
+      )}
+      {!displayMsg && !loading && (
         <Box
           style={{
             marginBottom: "5rem",
