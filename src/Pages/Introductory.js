@@ -11,7 +11,7 @@ const Introductory = () => {
         }}
       >
         <Typography variant="h4" gutterBottom>
-          Welcome to Food Hub!
+          Welcome to Taste Hub!
         </Typography>
         <Typography style={{ marginTop: "3rem" }} variant="body1" gutterBottom>
           Explore a world of delicious recipes at your fingertips.

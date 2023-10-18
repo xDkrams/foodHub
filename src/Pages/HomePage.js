@@ -110,7 +110,7 @@ const HomePage = () => {
             }}
             sx={{ "&:hover": { cursor: "pointer" } }}
           >
-            <h1>Food Hub</h1>
+            <h1>Taste Hub!</h1>
           </Box>
         </Grid>
         <Grid item xs={12} md={12} lg={12} align="center">
@@ -170,12 +170,8 @@ const HomePage = () => {
       )}
       {loading && (
         <Grid item xs={12} md={12} lg={12} align="center">
-          <Box
-            style={{
-              height: "45vh",
-            }}
-          >
-            <CircularProgress />
+          <Box>
+            <CircularProgress style={{ margin: "10rem 0" }} />
           </Box>
         </Grid>
       )}
@@ -324,7 +320,7 @@ const HomePage = () => {
       )}
 
       {buttonTransitions((styles, item) =>
-        recipe && recipe.length > 0 ? (
+        recipe && recipe.length && !loading > 0 ? (
           <animated.div style={styles}>
             <Box style={{ marginTop: "2rem", textAlign: "center" }}>
               <Button onClick={handlePrevious}>Previous</Button>
